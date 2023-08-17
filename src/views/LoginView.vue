@@ -1,4 +1,7 @@
+
 <script setup>
+
+// Masih terdapat bug pada login bila mengganti halaman form ke register lalu kembali ke halaman form login
 import { ref } from 'vue';
 import { d$auth } from '@/stores/auth';
 import BaseInput from '@comp/BaseInput.vue';
@@ -25,7 +28,7 @@ async function login() {
 
         authentication().a$setUser();
         resetFormLogin();
-        router.replace({ name: 'profile', params: { id: authentication().g$user.id } });
+        router.push({ name: 'profile', params: { id: authentication().g$user.id } });
     } catch (error) {
         console.error(error);
     }
@@ -49,7 +52,6 @@ function resetFormRegist() {
     Object.assign(inputRegist, ref({ ...initInputRegist }));
 }
 
-
 function toggleLogin() {
     isLogin.value = !isLogin.value;
 }
@@ -62,8 +64,14 @@ function toggleTip() {
 <template>
     <div>
         <tr>
-            <td><h1 @click="toggleLogin" @mouseover="toggleTip" @mouseleave="toggleTip"> {{ isLogin ? 'Login' : 'Register' }}</h1></td>
-            <td v-if="isTipShown">&nbsp;click to change page to {{ !isLogin ? 'Login' : 'Register' }}</td>
+            <td>
+                <h1 @click="toggleLogin" @mouseover="toggleTip" @mouseleave="toggleTip">
+                    {{ isLogin ? 'Login' : 'Register' }}
+                </h1>
+            </td>
+            <td v-if="isTipShown">
+                &nbsp;click to change page to {{ !isLogin ? 'Login' : 'Register' }}
+            </td>
         </tr>
         <form
             @submit.prevent="login"
@@ -89,7 +97,12 @@ function toggleTip() {
             <button type="submit">Login</button>
             <button type="reset">Cancel</button>
         </form>
-        <form @submit.prevent="register" @reset="resetFormRegist" v-else-if="!authentication.isLoggedin && !isLogin" method="post">
+        <form
+            @submit.prevent="register"
+            @reset="resetFormRegist"
+            v-else-if="!authentication.isLoggedin && !isLogin"
+            method="post"
+        >
             <BaseInput
                 v-model="inputRegist.name"
                 name="Name"
@@ -115,6 +128,6 @@ function toggleTip() {
             <button type="submit">Regist</button>
             <button type="reset">Cancel</button>
         </form>
-        <h3 v-else>{{ authentication().g$user?.id }}</h3>
+        <h3 v-else>{{ authentication().g$user.id }}</h3>
     </div>
 </template>
