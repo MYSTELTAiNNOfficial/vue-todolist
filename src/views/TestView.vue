@@ -42,8 +42,7 @@ async function deleteData(index) {
 
 function editData(param) {
     editing.value = param;
-    Object.assign(input, ref({ ...store.getDetail(param) })); //tidak bisa
-    //input.value = store.getDetail(param);
+    Object.assign(input, ref({ ...store.getDetail(param) }));
 }
 
 async function toggleComplete(index) {
