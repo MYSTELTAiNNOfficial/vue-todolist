@@ -1,48 +1,61 @@
 import { defineStore } from "pinia";
 import { reactive, computed } from "vue";
 
- export const useListStore = defineStore('list', () => {
-    const list = reactive([
-        {
-            name: 'First',
-        },
-        {
-            name: 'Second',
-        },
-    ])
+import * as s$todo from '@/services/todo'
 
-    const getList = computed(() => list)
+export const d$todo = defineStore('list', () => {
+    const list = reactive([])
 
-    function addToList(params) {
-        if (params.name){
-            list.push(params)
-        }
-        else{
-            alert('Nama aktifitas tidak boleh kosong')
+    async function a$list() {
+        try {
+            const { data } = await s$todo.list()
+            list.splice(0, list.length, ...data)
+            console.log(list)
+        } catch ({ message, error }) {
+            throw message ?? error
         }
     }
 
-    function removeFromList(index) {
-        list.splice(index, 1)
+    async function a$add(body) {
+        try{
+            await s$todo.add(body)
+            await a$list()
+        }catch({message, error}){
+            throw message ?? error
+        }
     }
 
-    function getDetail(id) {
-        console.log(list[id])
+    function getDetail(param) {
         const data = {
-            name: list[id].name,
-            desc: list[id].desc,
-            complete: list[id].complete,
+            id: list[param].id,
+            title: list[param].title,
+            description: list[param].description,
+            category: list[param].category,
+            completed: list[param].completed,
         }
+        console.log(data)
         return data
     }
 
-    function updateList(id, data) {
-        list[id] = data
+    async function a$update (id, data) {
+        try {
+            await s$todo.edit(id, data)
+            await a$list()
+        } catch ({ message, error }) {
+            throw message ?? error
+        }
     }
 
-    function updateComplete(id) {
-        list[id].complete = !list[id].complete
+    async function a$remove (index) {
+        try {
+            await s$todo.remove(index)
+            await a$list()
+        } catch ({ message, error }) {
+            throw message ?? error
+        }
     }
 
-    return {list, getList, addToList, removeFromList, getDetail, updateList, updateComplete}
- })
+    const getList = computed(() => list)
+
+    return { list, a$list, a$add, a$remove, getDetail, a$update, getList }
+})
