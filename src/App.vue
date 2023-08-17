@@ -1,6 +1,10 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { computed } from 'vue'
+import { d$auth } from '@/stores/auth'
 import HelloWorld from './components/HelloWorld.vue'
+d$auth().a$setUser()
+const username = computed(() => d$auth().g$user?.id)
 </script>
 
 <template>
@@ -13,6 +17,8 @@ import HelloWorld from './components/HelloWorld.vue'
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
+        <RouterLink :to="{ name: 'test' }">Test</RouterLink>
+        <RouterLink :to="{ name: 'profile', params: { id: username ?? '' } }">Profile</RouterLink>
       </nav>
     </div>
   </header>
