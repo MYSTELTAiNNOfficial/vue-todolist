@@ -105,7 +105,7 @@ function resetForm() {
                     {{ item.completed ? '✓' : '✕' }}
                 </td>
                 <td class="table-td">
-                    <button @click="deleteData(index)" :disabled="editing !== false">🗑️</button>
+                    <button @click="deleteData(item.id)" :disabled="editing !== false">🗑️</button>
                     <button @click="editData(index)" :disabled="editing !== false">✏️</button>
                 </td>
             </tr>
